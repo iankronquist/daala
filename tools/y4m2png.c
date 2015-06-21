@@ -54,7 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 #endif
 #include <png.h>
 #include <zlib.h>
-#include <ogg/os_types.h>
+#include <stdint.h>
 #include "vidinput.h"
 
 #define OD_MINI(_a,_b)      ((_a)<(_b)?(_a):(_b))
@@ -90,7 +90,7 @@ void **od_malloc_2d(size_t _height,size_t _width,size_t _sz){
   rowsz=_sz*_width;
   datsz=rowsz*_height;
   /*Alloc array and row pointers.*/
-  ret=(char *)_ogg_malloc(datsz+colsz);
+  ret=(char *)malloc(datsz+colsz);
   /*Initialize the array.*/
   if(ret!=NULL){
     size_t   i;
@@ -104,7 +104,7 @@ void **od_malloc_2d(size_t _height,size_t _width,size_t _sz){
 }
 
 void od_free_2d(void *_ptr){
-  _ogg_free(_ptr);
+  free(_ptr);
 }
 
 static void usage(const char *_argv0){
