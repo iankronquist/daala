@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 #include <stdlib.h>
 #include <string.h>
 
-#include <ogg/os_types.h>
+#include <stdint.h>
 
 extern video_input_vtbl Y4M_INPUT_VTBL;
 

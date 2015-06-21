@@ -11,7 +11,7 @@
 #include <io.h>
 #include <fcntl.h>
 #endif
-#include <ogg/os_types.h>
+#include <stdint.h>
 #include "getopt.h"
 
 const char *optstring = "cfrs";
