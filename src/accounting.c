@@ -136,8 +136,8 @@ static int od_acct_index(unsigned int state[OD_ACCT_NCATS]) {
   return index;
 }
 
-void od_acct_update_frac_bits(od_acct *acct, ogg_uint32_t frac_bits) {
-  ogg_uint32_t frac_bits_diff;
+void od_acct_update_frac_bits(od_acct *acct, uint32_t frac_bits) {
+  uint32_t frac_bits_diff;
   frac_bits_diff = frac_bits - acct->last_frac_bits;
   acct->frac_bits[od_acct_index(acct->state)] += frac_bits_diff;
   acct->last_frac_bits = frac_bits;
@@ -150,7 +150,7 @@ void od_acct_set_category(od_acct *acct, od_acct_category cat,
   acct->state[cat] = value;
 }
 
-void od_acct_update(od_acct *acct, ogg_uint32_t frac_bits,
+void od_acct_update(od_acct *acct, uint32_t frac_bits,
  od_acct_category cat, unsigned int value) {
   od_acct_update_frac_bits(acct, frac_bits);
   od_acct_set_category(acct, cat, value);
@@ -174,10 +174,10 @@ static int od_acct_next_state(unsigned int state[OD_ACCT_NCATS],
   return 0;
 }
 
-static ogg_uint32_t od_acct_get_total(od_acct *acct,
+static uint32_t od_acct_get_total(od_acct *acct,
  int cat, unsigned int value) {
   unsigned int state[OD_ACCT_NCATS];
-  ogg_uint32_t total;
+  uint32_t total;
   int i;
   for (i = 0; i < OD_ACCT_NCATS; i++) {
     state[i] = 0;
@@ -214,7 +214,7 @@ void od_acct_print(od_acct *acct, FILE *_fp) {
   while (od_acct_next_state(state, OD_ACCT_NCATS));
 }
 
-void od_acct_write(od_acct *acct, ogg_int64_t cur_time) {
+void od_acct_write(od_acct *acct, int64_t cur_time) {
   int cat;
   unsigned int value;
   long fsize;

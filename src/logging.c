@@ -272,8 +272,8 @@ re_format: \
 
 DEFINE_OD_LOG_MATRIX(char, char, "%s%d%c")
 DEFINE_OD_LOG_MATRIX(unsigned char, uchar, "%s%u%c")
-DEFINE_OD_LOG_MATRIX(ogg_int16_t, int16, "%s%d%c")
-DEFINE_OD_LOG_MATRIX(ogg_uint16_t, uint16, "%s%u%c")
-DEFINE_OD_LOG_MATRIX(ogg_int32_t, int32, "%s%d%c")
-DEFINE_OD_LOG_MATRIX(ogg_uint32_t, uint32, "%s%u%c")
+DEFINE_OD_LOG_MATRIX(int16_t, int16, "%s%d%c")
+DEFINE_OD_LOG_MATRIX(uint16_t, uint16, "%s%u%c")
+DEFINE_OD_LOG_MATRIX(int32_t, int32, "%s%d%c")
+DEFINE_OD_LOG_MATRIX(uint32_t, uint32, "%s%u%c")
 DEFINE_OD_LOG_MATRIX(float, float, "%s%g%c")

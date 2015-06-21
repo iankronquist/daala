@@ -183,10 +183,10 @@ int main(int argc, char *argv[]) {
 
   int frames = 0;
   int pix_fmt = 1;
-  ogg_int32_t pic_width = 0;
-  ogg_int32_t pic_height = 0;
-  ogg_int32_t fps_num = 0;
-  ogg_int32_t fps_denom = 0;
+  int32_t pic_width = 0;
+  int32_t pic_height = 0;
+  int32_t fps_num = 0;
+  int32_t fps_denom = 0;
   FILE *infile = stdin;
   outfile = stdout;
   daala_log_init();

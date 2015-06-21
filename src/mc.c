@@ -43,10 +43,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
   log_xblk_sz: The log base 2 of the horizontal block dimension.
   log_yblk_sz: The log base 2 of the vertical block dimension.*/
 void od_mc_predict1fmv8_c(unsigned char *dst, const unsigned char *src,
- int systride, ogg_int32_t mvx, ogg_int32_t mvy,
+ int systride, int32_t mvx, int32_t mvy,
  int log_xblk_sz, int log_yblk_sz) {
-  ogg_uint32_t mvxf;
-  ogg_uint32_t mvyf;
+  uint32_t mvxf;
+  uint32_t mvyf;
   int xblk_sz;
   int yblk_sz;
   int p00;
@@ -57,14 +57,14 @@ void od_mc_predict1fmv8_c(unsigned char *dst, const unsigned char *src,
   xblk_sz = 1 << log_xblk_sz;
   yblk_sz = 1 << log_yblk_sz;
   src += (mvx >> 16) + (mvy >> 16)*systride;
-  mvxf = (ogg_uint32_t)(mvx & 0xFFFF);
-  mvyf = (ogg_uint32_t)(mvy & 0xFFFF);
+  mvxf = (uint32_t)(mvx & 0xFFFF);
+  mvyf = (uint32_t)(mvy & 0xFFFF);
   if (mvxf != 0) {
     if (mvyf != 0) {
       for (j = 0; j < yblk_sz; j++) {
         for (i = 0; i < xblk_sz; i++) {
-          ogg_uint32_t a;
-          ogg_uint32_t b;
+          uint32_t a;
+          uint32_t b;
           int p11;
           /*printf("<%16.12f, %16.12f>%s", mvx/(double)0x40000,
            mvy/(double)0x40000, i + 1 < xblk_sz ? "::" : "\n");*/
@@ -72,8 +72,8 @@ void od_mc_predict1fmv8_c(unsigned char *dst, const unsigned char *src,
           p01 = src[i<<1 | 1];
           p10 = (src + systride)[i<<1];
           p11 = (src + systride)[i<<1 | 1];
-          a = (((ogg_uint32_t)p00 << 16) + (p01 - p00)*mvxf) >> 16;
-          b = (((ogg_uint32_t)p10 << 16) + (p11 - p10)*mvxf) >> 16;
+          a = (((uint32_t)p00 << 16) + (p01 - p00)*mvxf) >> 16;
+          b = (((uint32_t)p10 << 16) + (p11 - p10)*mvxf) >> 16;
           dst[j*xblk_sz + i] = (unsigned char)(((a<<16) + (b - a)*mvyf) >> 16);
         }
         src += systride << 1;
@@ -87,7 +87,7 @@ void od_mc_predict1fmv8_c(unsigned char *dst, const unsigned char *src,
           p00 = src[i<<1];
           p01 = src[i<<1 | 1];
           dst[j*xblk_sz + i] = (unsigned char)(
-           (((ogg_uint32_t)p00 << 16) + (p01 - p00)*mvxf) >> 16);
+           (((uint32_t)p00 << 16) + (p01 - p00)*mvxf) >> 16);
         }
         src += systride << 1;
       }
@@ -102,7 +102,7 @@ void od_mc_predict1fmv8_c(unsigned char *dst, const unsigned char *src,
           p00 = src[i<<1];
           p10 = (src + systride)[i<<1];
           dst[j*xblk_sz + i] = (unsigned char)(
-           (((ogg_uint32_t)p00 << 16) + (p10 - p00)*mvyf) >> 16);
+           (((uint32_t)p00 << 16) + (p10 - p00)*mvyf) >> 16);
         }
         src += systride << 1;
       }
@@ -126,7 +126,7 @@ void od_mc_predict1fmv8_c(unsigned char *dst, const unsigned char *src,
 }
 
 static void od_mc_predict1fmv8(od_state *state, unsigned char *dst,
- const unsigned char *src, int systride, ogg_int32_t mvx, ogg_int32_t mvy,
+ const unsigned char *src, int systride, int32_t mvx, int32_t mvy,
  int log_xblk_sz, int log_yblk_sz) {
   (*state->opt_vtbl.mc_predict1fmv8)(dst, src, systride, mvx, mvy,
    log_xblk_sz, log_yblk_sz);
@@ -147,8 +147,8 @@ void od_mc_blend_full8_c(unsigned char *dst, int dystride,
   round = 1 << (log_blk_sz2 - 1);
   for (j = 0; j < yblk_sz; j++) {
     for (i = 0; i < xblk_sz; i++) {
-      ogg_int32_t a;
-      ogg_int32_t b;
+      int32_t a;
+      int32_t b;
       a = src[0][j*xblk_sz + i];
       b = src[3][j*xblk_sz + i];
       a = (a << log_xblk_sz) + (src[1][j*xblk_sz + i] - a)*i;
@@ -241,8 +241,8 @@ static void od_mc_blend_multi8(unsigned char *dst, int dystride,
       /*LL blending.*/
       a = (ll[0] << log_xblk_sz) + (ll[1] - ll[0])*i;
       b = (ll[3] << log_xblk_sz) + (ll[2] - ll[3])*i;
-      a = (int)((((ogg_int32_t)a << log_yblk_sz) +
-       (ogg_int32_t)(b - a)*j) >> log_blk_sz2);
+      a = (int)((((int32_t)a << log_yblk_sz) +
+       (int32_t)(b - a)*j) >> log_blk_sz2);
       /*Inverse Haar wavelet.*/
       c = (a - hl + 1) >> 1;
       a = (a + hl + 1) >> 1;
@@ -278,8 +278,8 @@ static void od_mc_blend_multi8(unsigned char *dst, int dystride,
       /*LL blending.*/
       a = (ll[0] << log_xblk_sz) + (ll[1] - ll[0])*i;
       b = (ll[3] << log_xblk_sz) + (ll[2] - ll[3])*i;
-      a = (int)((((ogg_int32_t)a << log_yblk_sz)
-       + (ogg_int32_t)(b - a)*j) >> log_blk_sz2);
+      a = (int)((((int32_t)a << log_yblk_sz)
+       + (int32_t)(b - a)*j) >> log_blk_sz2);
       /*Inverse Haar wavelet.*/
       c = (a - hl + 1) >> 1;
       a = (a + hl + 1) >> 1;
@@ -321,8 +321,8 @@ static void od_mc_blend_multi8(unsigned char *dst, int dystride,
       /*LL blending.*/
       a = (ll[0] << log_xblk_sz) + (ll[1] - ll[0])*i;
       b = (ll[3] << log_xblk_sz) + (ll[2] - ll[3])*i;
-      a = (int)(((ogg_int32_t)a << log_yblk_sz)
-       + (ogg_int32_t)(b - a)*j >> log_blk_sz2);
+      a = (int)(((int32_t)a << log_yblk_sz)
+       + (int32_t)(b - a)*j >> log_blk_sz2);
       /*Inverse Haar wavelet.*/
       c = (a - hl + 1) >> 1;
       a = (a + hl + 1) >> 1;
@@ -358,8 +358,8 @@ static void od_mc_blend_multi8(unsigned char *dst, int dystride,
       /*LL blending.*/
       a = (ll[0] << log_xblk_sz) + (ll[1] - ll[0])*i;
       b = (ll[3] << log_xblk_sz) + (ll[2] - ll[3])*i;
-      a = (int)((((ogg_int32_t)a << log_yblk_sz)
-       + (ogg_int32_t)(b - a)*j) >> log_blk_sz2);
+      a = (int)((((int32_t)a << log_yblk_sz)
+       + (int32_t)(b - a)*j) >> log_blk_sz2);
       /*Inverse Haar wavelet.*/
       c = (a - hl + 1) >> 1;
       a = (a + hl + 1) >> 1;
@@ -760,10 +760,10 @@ void od_mc_blend_full_split8_c(unsigned char *dst, int dystride,
   for (k = 0; k < 4; k++) sw[k] = s0[k];
   for (j = 0; j < yblk_sz; j++) {
     for (i = 0; i < xblk_sz; i++) {
-      ogg_int32_t a;
-      ogg_int32_t b;
-      ogg_int32_t c;
-      ogg_int32_t d;
+      int32_t a;
+      int32_t b;
+      int32_t c;
+      int32_t d;
       a = src[0][j*xblk_sz + i];
       b = (src[1][j*xblk_sz + i] - a)*sw[1];
       c = (src[2][j*xblk_sz + i] - a)*sw[2];
@@ -2336,10 +2336,10 @@ static void od_mc_blend8(od_state *state, unsigned char *dst, int dystride,
 
 void od_mc_predict8(od_state *state, unsigned char *dst, int dystride,
  const unsigned char *src, int systride,
- const ogg_int32_t mvx[4], /* This is x coord for the four
+ const int32_t mvx[4], /* This is x coord for the four
                             motion vectors of the four corners
                             (in rotation not raster order). */
- const ogg_int32_t mvy[4],
+ const int32_t mvy[4],
  int oc, /* Index of outside corner. */
  int s, /* Two split flags that indicate if the corners are split. */
  int log_xblk_sz,   /* Log 2 of block size. */
@@ -2526,7 +2526,7 @@ int od_mv_split_flag_ctx(od_mv_grid_pt **grid, int vx, int vy,int level) {
   return 3 * (split1 + split2) + same1 + same2;
 }
 
-ogg_uint16_t *od_mv_split_flag_cdf(od_state *state,
+uint16_t *od_mv_split_flag_cdf(od_state *state,
  int vx, int vy, int level) {
   int ctx;
   ctx = od_mv_split_flag_ctx(state->mv_grid, vx, vy, level);

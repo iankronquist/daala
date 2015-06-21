@@ -429,7 +429,7 @@ void od_state_clear(od_state *state) {
   These statistics should be regenerated if the number of levels or the size
    of the levels change.*/
 
-static const ogg_uint16_t OD_MV_SPLIT_FLAG_PROBZ_Q15[OD_MC_LEVEL_MAX][9] = {
+static const uint16_t OD_MV_SPLIT_FLAG_PROBZ_Q15[OD_MC_LEVEL_MAX][9] = {
   { 30512, 31715, 32546, 19755, 22768, 25170, 8822, 11180, 13710 },
   { 15025, 11377, 11630, 11771, 13799, 17357, 9106, 12384, 14943 },
   { 20517, 21744, 24679, 12351, 12900, 16429, 8029, 9085, 12245 },
@@ -472,8 +472,8 @@ void od_adapt_ctx_reset(od_adapt_ctx *state, int is_keyframe) {
   state->split_flag_increment = 128;
   for (level = 0; level < OD_MC_LEVEL_MAX; level++) {
     for (i = 0; i < 9; i++) {
-      state->split_flag_cdf[level][i][0] = (ogg_uint16_t)(
-       (ogg_uint32_t)OD_MV_SPLIT_FLAG_PROBZ_Q15[level][i]*
+      state->split_flag_cdf[level][i][0] = (uint16_t)(
+       (uint32_t)OD_MV_SPLIT_FLAG_PROBZ_Q15[level][i]*
        (state->split_flag_increment >> 1) >> 15);
       state->split_flag_cdf[level][i][1] = state->split_flag_increment >> 1;
     }
@@ -800,8 +800,8 @@ void od_state_pred_block_from_setup(od_state *state,
  int vx, int vy, int oc, int s, int log_mvb_sz) {
   od_img_plane *iplane;
   od_mv_grid_pt *grid[4];
-  ogg_int32_t mvx[4];
-  ogg_int32_t mvy[4];
+  int32_t mvx[4];
+  int32_t mvy[4];
   const int *dxp;
   const int *dyp;
   int x;
@@ -813,8 +813,8 @@ void od_state_pred_block_from_setup(od_state *state,
   for (k = 0; k < 4; k++) {
     grid[k] = state->mv_grid[vy + (dyp[k] << log_mvb_sz)]
      + vx + (dxp[k] << log_mvb_sz);
-    mvx[k] = (ogg_int32_t)grid[k]->mv[0] << (14 - iplane->xdec);
-    mvy[k] = (ogg_int32_t)grid[k]->mv[1] << (14 - iplane->ydec);
+    mvx[k] = (int32_t)grid[k]->mv[0] << (14 - iplane->xdec);
+    mvy[k] = (int32_t)grid[k]->mv[1] << (14 - iplane->ydec);
   }
   x = vx << (OD_LOG_MVBSIZE_MIN + 1 - iplane->xdec);
   y = vy << (OD_LOG_MVBSIZE_MIN + 1 - iplane->ydec);
@@ -1380,12 +1380,12 @@ void od_state_init_border(od_state *state) {
   }
 }
 
-ogg_int64_t daala_granule_basetime(void *encdec, ogg_int64_t granpos) {
+int64_t daala_granule_basetime(void *encdec, int64_t granpos) {
   od_state *state;
   state = (od_state *)encdec;
   if (granpos >= 0) {
-    ogg_int64_t key_time;
-    ogg_int64_t delta_time;
+    int64_t key_time;
+    int64_t delta_time;
     key_time = granpos >> state->info.keyframe_granule_shift;
     delta_time = granpos - (key_time << state->info.keyframe_granule_shift);
     return key_time + delta_time;
@@ -1393,9 +1393,9 @@ ogg_int64_t daala_granule_basetime(void *encdec, ogg_int64_t granpos) {
   return -1;
 }
 
-double daala_granule_time(void *encdec, ogg_int64_t granpos) {
+double daala_granule_time(void *encdec, int64_t granpos) {
   od_state *state;
-  ogg_int64_t base_time;
+  int64_t base_time;
   state = (od_state *)encdec;
   base_time = daala_granule_basetime(encdec, granpos);
   if (base_time >= 0) {
